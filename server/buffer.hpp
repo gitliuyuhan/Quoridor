@@ -42,6 +42,10 @@ public:
         for(auto i = buffer.begin();i != buffer.begin()+write_index;i++)
             std::cout<<*i;
     }
+    char* begin()
+    {
+        return &(*buffer.begin());
+    }
 private:
     std::vector<char>     buffer;
     int                   write_index; //写数据位置
