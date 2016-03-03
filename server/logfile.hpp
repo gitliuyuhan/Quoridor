@@ -6,6 +6,7 @@
 #include<sys/types.h>
 #include<sys/stat.h>
 #include<fcntl.h>
+#include<unistd.h>
 
 namespace net
 {
@@ -14,12 +15,14 @@ class Logfile
 public:
     Logfile(std::string file)
     {
-        fd = open(file.c_str(),O_CREAT | O_WRONLY);
+        fd = open(file.c_str(),O_CREAT | O_WRONLY | O_APPEND);
         if(fd == -1)
             perror("logfile.hpp open");
     }
     ~Logfile()
-    {}
+    {
+        close(fd);
+    }
     //写日志
     void writeLog(char* msg,int len)
     {
