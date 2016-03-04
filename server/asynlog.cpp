@@ -147,7 +147,9 @@ void Asynlog::threadFunc()
     std::cout<<"日志后台线程启动......"<<std::endl;
     //用来写日志的buffer表
     std::vector<std::unique_ptr<Buffer> >       buffer_list_write;
-    Logfile       output("./running.log");
+
+    //日志文件以日期时间命名
+    Logfile       output(Timestamp::timeToFString()+".log");
     //预留16个满buffer空间
     buffer_list_write.reserve(16);
     while(running)
@@ -170,7 +172,7 @@ void Asynlog::threadFunc()
                 {
                     buffer_list.push_back(std::move(cur_buffer));
                     cur_buffer.reset(new Buffer());
-                }
+                 }
             }
             //交换两个容器
             buffer_list_write = std::move(buffer_list);
