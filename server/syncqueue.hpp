@@ -37,18 +37,6 @@ public:
         std::lock_guard<std::mutex>    locker(mutex_);
         return queue_.size();
     }
-    //队列为空返回true
-    bool isEmpty()
-    {
-//        std::lock_guard<std::mutex>   locker(mutex_);
-        return queue_.empty();
-    }
-    //队列满了返回true
-    bool isFull()
-    {
-//        std::lock_guard<std::mutex>   locker(mutex_);
-        return queue_.size() == max_size;
-    }
     //添加任务
     void Put(T&  x)
     {
@@ -70,8 +58,29 @@ public:
             return;
         x = queue_.front();
         queue_.pop_front();
+        std::cout<<"++++++++++++++++++++++++++++++++"<<std::endl;
         not_full.notify_one();
     }
+private:
+    //队列为空返回true
+    bool isEmpty()
+    {
+//        std::lock_guard<std::mutex>   locker(mutex_);
+        bool b = queue_.empty();
+//        if(b)
+//            std::cout<<"缓冲区空了，等待新任务......"<<std::endl;
+        return b;
+    }
+    //队列满了返回true
+    bool isFull()
+    {
+//        std::lock_guard<std::mutex>   locker(mutex_);
+        bool b = queue_.size() == max_size;
+//        if(b)
+//            std::cout<<"缓冲区满了，等待取任务......"<<std::endl;
+        return b;
+    }
+
 private:
     //队列缓冲区
     std::list<T>                    queue_;

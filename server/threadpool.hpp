@@ -39,12 +39,11 @@ public:
         {
             //为线程绑定工作函数
             thread_group.push_back(std::make_shared<std::thread>(&ThreadPool::run,this));
-            std::cout<<"thread...."<<std::endl;
         }
         std::cout<<"线程池开启......"<<std::endl;
     }
     //往线程池添加任务
-    void addTask(Task&  task)
+    void addTask(std::shared_ptr<Task>  task)
     {
         sync_queue.Put(task);
     }
@@ -52,11 +51,16 @@ private:
     //线程工作函数
     void run()
     {
+        auto thread_id = std::this_thread::get_id();
+        std::cout<<"同步线程"<<thread_id<<"正在运行"<<std::endl;
         while(running)
         {
             //取任务执行
-            Task    task;
+            std::shared_ptr<Task>    task;
             sync_queue.Take(task);
+            //判断线程池是否已停止
+            if(!running)
+                return;
             task->process();
         }
     }
@@ -79,7 +83,7 @@ private:
     //线程组
     std::list<std::shared_ptr<std::thread> >     thread_group;
     //同步队列
-    SyncQueue<Task>                              sync_queue;
+    SyncQueue<std::shared_ptr<Task> >            sync_queue;
     //原子变量，线程池停止标志
     std::atomic_bool                             running;
     //保证多线程下函数只调用一次标志
