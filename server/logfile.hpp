@@ -15,7 +15,7 @@ class Logfile
 public:
     Logfile(std::string file)
     {
-        fd = open(file.c_str(),O_CREAT | O_WRONLY | O_APPEND);
+        fd = open(file.c_str(),O_CREAT | O_RDWR | O_APPEND,0664);
         if(fd == -1)
             perror("logfile.hpp open");
     }
