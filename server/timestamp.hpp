@@ -31,14 +31,18 @@ public:
                 tmp.tm_hour,tmp.tm_min,tmp.tm_sec);
     }
     //将当前时间转换为适合文件命名的字符串
-    static void timeToFString(char* t_str)
+    static std::string timeToFString(char* t_str=NULL)
     {
+        char   s[20];
+        if(!t_str)
+            t_str = s;
         time_t   t = time(NULL);
         struct tm tmp;
         localtime_r(&t,&tmp);
         snprintf(t_str,20,"%04d%02d%02d%02d%02d%02d",
                 tmp.tm_year+1990,tmp.tm_mon+1,tmp.tm_mday,
                 tmp.tm_hour,tmp.tm_min,tmp.tm_sec);
+        return std::string(t_str);
     }
     //转化为秒数
     double timeToSec()
