@@ -15,7 +15,17 @@ namespace net
 class TcpSocket
 {
 public:
-    TcpSocket(const char* ip,const char* port_)
+    TcpSocket()
+    {}
+    ~TcpSocket()
+    {}
+    //获取sockfd
+    int getSockfd()
+    {
+        return this->sockfd;
+    }
+    //socket初始化
+    void socketInit(const char* ip,const char* port_)
     {
         int   port = atoi(port_);
         bzero(&server_addr,sizeof(server_addr));
@@ -26,8 +36,6 @@ public:
         if(sockfd < 0)
             perror("socket");
     }
-    ~TcpSocket()
-    {}
     //连接服务器
     int Connect()
     {
