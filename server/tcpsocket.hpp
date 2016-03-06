@@ -63,7 +63,8 @@ public:
     //接受连接
     int Accept()
     {
-        int connfd = accept(sockfd,(struct sockaddr*)&client_addr,sizeof(client_addr));
+        socklen_t        client_addr_length = sizeof(client_addr);
+        int connfd = accept(sockfd,(struct sockaddr*)&client_addr,&client_addr_length);
         if(connfd < 0)
             perror("accept");
         return connfd;
