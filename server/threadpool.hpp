@@ -34,13 +34,13 @@ public:
     void start(int num_threads = 100)
     {
         running = true;
+        std::cout<<"线程池正在开启......"<<std::endl;
         //创建线程组
         for(int i=0;i<num_threads;++i)
         {
             //为线程绑定工作函数
             thread_group.push_back(std::make_shared<std::thread>(&ThreadPool::run,this));
         }
-        std::cout<<"线程池开启......"<<std::endl;
     }
     //往线程池添加任务
     void addTask(std::shared_ptr<Task>  task)
