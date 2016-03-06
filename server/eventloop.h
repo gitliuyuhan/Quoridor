@@ -30,7 +30,7 @@ public:
     //设置套接字非阻塞
     int setNonblocking(int fd);
     //注册epoll事件
-    void addfd(int fd);
+    void addfd(int fd,int oneshot);
 private:
     //添加连接套接字
     void addToConnTable(int connfd);
@@ -38,6 +38,8 @@ private:
     void removefd(int fd);
     //关闭eventloop
     void closeEventLoop();
+    //重置fd事件
+    void resetOneShot(int fd);
 private:
     //用户连接表
     std::vector<std::shared_ptr<User> >           conn_table;

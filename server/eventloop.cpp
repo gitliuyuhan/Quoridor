@@ -13,14 +13,14 @@
 EventLoop::EventLoop(const char* ip,const char* port):conn_table(100)
 {
     //开启线程池
-    thread_pool.start(1);
+    thread_pool.start(5);
     //网络连接
     Socket.socketInit(ip,port);
     Socket.Bind();
     Socket.Listen();
     //epoll
     this->epollInit();
-    this->addfd(Socket.getSockfd());
+    this->addfd(Socket.getSockfd(),false);
     std::cout<<"等待处理网络连接......"<<std::endl;
     while(true)
     {
@@ -79,21 +79,35 @@ int EventLoop::setNonblocking(int fd)
     return old_option;
 }
 //注册事件
-void EventLoop::addfd(int fd)
+void EventLoop::addfd(int fd,int oneshot = false)
 {
     epoll_event      event;
     event.data.fd = fd;
-    event.events = EPOLLIN | EPOLLRDHUP | EPOLLONESHOT;
+    event.events = EPOLLIN | EPOLLRDHUP;
+    //是否注册EPOLLONESHOT事件
+    if(oneshot)
+    {
+        event.events |= EPOLLONESHOT;
+    }
     epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&event);
     setNonblocking(fd);
+}
+//重置fd上的事件
+void EventLoop::resetOneShot(int fd)
+{
+    epoll_event    event;
+    event.data.fd = fd;
+    event.events = EPOLLIN | EPOLLRDHUP | EPOLLONESHOT;
+    epoll_ctl(epollfd,EPOLL_CTL_MOD,fd,&event);
 }
 //添加连接套接字
 void EventLoop::addToConnTable(int connfd)
 {
     std::shared_ptr<User>   user_ptr(new User(connfd));
+    user_ptr->bindFunc(std::bind(&EventLoop::resetOneShot,this,std::placeholders::_1));
     conn_table[connfd] = user_ptr;
     //注册套接字事件，设置非阻塞
-    this->addfd(connfd);
+    this->addfd(connfd,true);
 }
 //从epoll移除套接字
 void EventLoop::removefd(int fd)

@@ -32,13 +32,12 @@ public:
         std::cout<<"thread_id:"<<std::this_thread::get_id()<<std::endl;
         if(readMsg() )
         {
-            getMsgFromBuffer();
+            while(getMsgFromBuffer() ){}
         }
     }
     //读数据
     int readMsg()
     {
-        sleep(10);
         char        buf[1024];
         int ret = ::read(self_fd,buf,sizeof(buf));
         if(ret < 0)
@@ -49,19 +48,21 @@ public:
         {
             user_buffer.append(buf,ret);
         }
+        //重新注册fd
+        reset_oneshot(self_fd);
         return ret;
     }
     //从buffer取数据
-    void getMsgFromBuffer()
+    bool getMsgFromBuffer()
     {
         //消息长度字段
         int                length=0;
         if(user_buffer.readableSize() <= sizeof(length))
-            return;
+            return false;
         user_buffer.copySomeData((char*)&length,sizeof(length));
         //判断buffer中够不够一个完整的数据包
         if(length+sizeof(length) > user_buffer.readableSize())
-            return;
+            return false;
         //读一个数据包出来
         char               session_msg[1024];
         //清空
@@ -70,6 +71,7 @@ public:
         user_buffer.readBuffer(session_msg,length); //实际数据
         //处理数据
         parseMsg(session_msg);
+        return true;
     }
     //处理数据
     void parseMsg(std::string session_msg)
@@ -81,6 +83,11 @@ public:
     {
         self_fd = -1;
     }
+    //function
+    void bindFunc(std::function<void(int)>  func)
+    {
+        reset_oneshot = func;
+    }
 private:
     //对方的sockfd
     int                           opponent_fd;
@@ -90,6 +97,8 @@ private:
     net::Buffer                   user_buffer;
     //静态成员，匹配队列，每个元素是一个房间，等待其他人匹配
     //静态成员，map,所有在线用户状态
+    //function
+    std::function<void(int)>      reset_oneshot;
 };
 
 #endif //USER_H
