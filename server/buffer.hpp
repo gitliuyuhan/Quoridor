@@ -33,10 +33,25 @@ public:
         std::copy(data,data+len,buffer.begin()+write_index);
         write_index += len;
     }
-    //读数据
-    void readBuffer(int len)
+    //将未读数据移动到起始位置
+    void moveToHead()
     {
+        std::copy(getReadPtr(),getReadPtr()+readableSize(),buffer.begin());
+        read_index = 0;
+        write_index = 0+readableSize();
+    }
+
+    //读数据
+    template<typename T>
+    void readBuffer(T* p,int len)
+    {
+        copySomeData(p,len);
         read_index = read_index+len;
+    }
+    //向外拷贝一些数据
+    void copySomeData(T* p,int len)
+    {
+        std::copy(getReadPtr(),getReadPtr()+len,p);
     }
     //重置buffer
     void resetBuffer()
@@ -50,6 +65,12 @@ public:
         for(auto i = buffer.begin();i != buffer.begin()+write_index;i++)
             std::cout<<*i;
     }
+    //获取读指针
+    void getReadPtr()
+    {
+        return this->begin() + read_index;
+    }
+    //头指针
     char* begin()
     {
         return &(*buffer.begin());
