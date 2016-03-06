@@ -14,8 +14,9 @@
 #include<memory>
 #include<sys/epoll.h>
 #include<fcntl.h>
-#include"user.h"
+#include"user.hpp"
 #include"tcpsocket.hpp"
+#include"threadpool.hpp"
 
 #define MAX_EVENT_NUMBER                 100
 
@@ -35,12 +36,15 @@ private:
     void addToConnTable(int connfd);
     //从epoll移除套接字
     void removefd(int fd);
+    //关闭eventloop
+    void closeEventLoop();
 private:
     //用户连接表
     std::vector<std::shared_ptr<User> >           conn_table;
     int                                           epollfd;
     epoll_event                                   events[MAX_EVENT_NUMBER];
     net::TcpSocket                                Socket;
+    net::ThreadPool<User>                         thread_pool;
 };
 
 #endif //EVENTLOOP_H
