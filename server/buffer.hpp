@@ -49,6 +49,7 @@ public:
         read_index = read_index+len;
     }
     //向外拷贝一些数据
+    template<typename T>
     void copySomeData(T* p,int len)
     {
         std::copy(getReadPtr(),getReadPtr()+len,p);
@@ -66,7 +67,7 @@ public:
             std::cout<<*i;
     }
     //获取读指针
-    void getReadPtr()
+    char* getReadPtr()
     {
         return this->begin() + read_index;
     }
@@ -74,6 +75,11 @@ public:
     char* begin()
     {
         return &(*buffer.begin());
+    }
+    //获取读位置
+    int getReadIndex()
+    {
+        return read_index;
     }
 private:
     std::vector<char>     buffer;
