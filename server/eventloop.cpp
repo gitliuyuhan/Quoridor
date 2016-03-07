@@ -35,7 +35,7 @@ EventLoop::EventLoop(const char* ip,const char* port):conn_table(100)
         for(int i=0;i<number;i++)
         {
             int sockfd = events[i].data.fd;
-            //有新连接
+            //有新连接listenfd
             if(sockfd == Socket.getSockfd())
             {
                 //建立连接

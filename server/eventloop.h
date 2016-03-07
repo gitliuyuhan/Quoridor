@@ -30,8 +30,20 @@ public:
     //设置套接字非阻塞
     int setNonblocking(int fd);
     //注册epoll事件
-    void addfd(int fd,int oneshot=false)
-    {}
+    void addfd(int fd,int oneshot = false)
+    {
+        epoll_event      event;
+        event.data.fd = fd;
+        event.events = EPOLLIN | EPOLLRDHUP;
+        //是否注册EPOLLONESHOT事件
+        if(oneshot)
+        {
+            event.events |= EPOLLONESHOT;
+        }
+        epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&event);
+        setNonblocking(fd);
+    }
+
 private:
     //添加连接套接字
     void addToConnTable(int connfd);

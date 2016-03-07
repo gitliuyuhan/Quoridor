@@ -14,6 +14,10 @@
 #include<stdio.h>
 #include<strings.h>
 #include"buffer.hpp"
+#include"message.hpp"
+#include"allmessage.hpp"
+#include"messagefactory.hpp"
+#include"./protobuf/game.SessionMsg.pb.h"
 
 class User
 {
@@ -74,9 +78,19 @@ public:
         return true;
     }
     //处理数据
-    void parseMsg(std::string session_msg)
+    void parseMsg(std::string msg)
     {
-        std::cout<<session_msg<<std::endl;
+        game::SessionMsg      session_msg;
+        if(session_msg.ParseFromString(msg))
+        {
+            auto msg_ptr = MessageFactory::produce_unique(session_msg.type());
+            msg_ptr->processMsg(self_fd,session_msg);
+        }
+        else
+        {
+            std::cout<<"消息解析错误"<<std::endl;
+        }
+//        std::cout<<msg<<std::endl;
     }
     //关闭套接字
     void close()
@@ -97,7 +111,7 @@ private:
     net::Buffer                   user_buffer;
     //静态成员，匹配队列，每个元素是一个房间，等待其他人匹配
     //静态成员，map,所有在线用户状态
-    //function
+    //function,用来重置fd
     std::function<void(int)>      reset_oneshot;
 };
 
