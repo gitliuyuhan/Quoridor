@@ -9,19 +9,27 @@
 #include<iostream>
 #include<unistd.h>
 #include<thread>
+#include<string>
 #include"../tcpsocket.hpp"
+#include"../protobuf/game.SessionMsg.pb.h"
 
 void sendMsg(int sockfd)
 {
-    int    length=0;
-    char   msg[1024];
+    int        length=0;
+    std::string     s;
+    game::SessionMsg    msg;
+    msg.set_type(2);
+    msg.set_account("lyh");
+    msg.set_passwd("123456");
+    msg.set_msg("hello,world");
     while(1)
     {
-        std::cout<<"输入数据包内容"<<std::endl;
-        std::cin>>msg;
-        length = strlen(msg);
+    //    std::cin>>msg;
+        sleep(1);
+        msg.SerializePartialToString(&s);
+        length = s.length();
         std::cout<<::write(sockfd,&length,sizeof(length))<<std::endl;
-        std::cout<<::write(sockfd,msg,length)<<std::endl;
+        std::cout<<::write(sockfd,s.c_str(),length)<<std::endl;
     }
 }
 
