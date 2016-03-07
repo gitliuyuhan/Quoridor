@@ -58,7 +58,6 @@ public:
             return;
         x = queue_.front();
         queue_.pop_front();
-        std::cout<<"++++++++++++++++++++++++++++++++"<<std::endl;
         not_full.notify_one();
     }
 private:

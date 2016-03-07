@@ -30,7 +30,8 @@ public:
     //设置套接字非阻塞
     int setNonblocking(int fd);
     //注册epoll事件
-    void addfd(int fd,int oneshot);
+    void addfd(int fd,int oneshot=false)
+    {}
 private:
     //添加连接套接字
     void addToConnTable(int connfd);

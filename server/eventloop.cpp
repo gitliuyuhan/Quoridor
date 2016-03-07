@@ -20,7 +20,8 @@ EventLoop::EventLoop(const char* ip,const char* port):conn_table(100)
     Socket.Listen();
     //epoll
     this->epollInit();
-    this->addfd(Socket.getSockfd(),false);
+    //默认不开启EPOLLONESHOT模式
+    this->addfd(Socket.getSockfd());
     std::cout<<"等待处理网络连接......"<<std::endl;
     while(true)
     {
@@ -79,7 +80,7 @@ int EventLoop::setNonblocking(int fd)
     return old_option;
 }
 //注册事件
-void EventLoop::addfd(int fd,int oneshot = false)
+/*void EventLoop::addfd(int fd,int oneshot = false)
 {
     epoll_event      event;
     event.data.fd = fd;
@@ -92,6 +93,7 @@ void EventLoop::addfd(int fd,int oneshot = false)
     epoll_ctl(epollfd,EPOLL_CTL_ADD,fd,&event);
     setNonblocking(fd);
 }
+*/
 //重置fd上的事件
 void EventLoop::resetOneShot(int fd)
 {
