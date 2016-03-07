@@ -1,0 +1,13 @@
+package game;
+message SessionMsg
+{
+    required int32       type=1;    //类型
+    
+    optional string      account=2; //帐号
+    optional string      passwd=3;  //密码
+    
+    optional string      msg=4;     //聊天消息
+
+    optional int32       x = 5;     //坐标
+    optional int32       y = 6;     //坐标
+}
