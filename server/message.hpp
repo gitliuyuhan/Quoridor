@@ -10,7 +10,7 @@ class Message
 public:
     Message()
     {}
-    ~Message()
+    virtual ~Message()
     {}
     //处理消息
     virtual void processMsg(int sockfd,game::SessionMsg& session_msg)
