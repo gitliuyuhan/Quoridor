@@ -12,6 +12,8 @@
 
 EventLoop::EventLoop(const char* ip,const char* port):conn_table(100)
 {
+    //启动日志
+    log.start();
     //开启线程池
     thread_pool.start(5);
     //网络连接
@@ -23,6 +25,10 @@ EventLoop::EventLoop(const char* ip,const char* port):conn_table(100)
     //默认不开启EPOLLONESHOT模式
     this->addfd(Socket.getSockfd());
     std::cout<<"等待处理网络连接......"<<std::endl;
+    //写日志
+    std::string       log_msg;
+    log_msg = "等待处理网络连接......";
+    log.writeLogToBuffer(log_msg.c_str(),log_msg.length(),net::WARN);
     while(true)
     {
         int number = epoll_wait(epollfd,events,MAX_EVENT_NUMBER,-1);

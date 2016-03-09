@@ -17,6 +17,7 @@
 #include"user.hpp"
 #include"tcpsocket.hpp"
 #include"threadpool.hpp"
+#include"asynlog.h"
 
 #define MAX_EVENT_NUMBER                 100
 
@@ -60,6 +61,7 @@ private:
     epoll_event                                   events[MAX_EVENT_NUMBER];
     net::TcpSocket                                Socket;
     net::ThreadPool<User>                         thread_pool;
+    net::Asynlog                                  log;
 };
 
 #endif //EVENTLOOP_H

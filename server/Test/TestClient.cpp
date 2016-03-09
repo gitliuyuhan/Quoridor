@@ -19,9 +19,10 @@ void sendMsg(int sockfd)
     std::string     s;
     game::SessionMsg    msg;
     msg.set_type(2);
-    msg.set_account("lyh");
-    msg.set_passwd("123456");
-    msg.set_msg("hello,world");
+    msg.set_account("1234567890");
+    msg.set_passwd("1234567890");
+    msg.set_msg("12345678901234567890");
+    msg.set_x(2000);
     while(1)
     {
     //    std::cin>>msg;

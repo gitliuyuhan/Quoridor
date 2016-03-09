@@ -7,6 +7,8 @@
  =======================================================*/
 
 #include<iostream>
+#include<sys/types.h>
+#include<unistd.h>
 #include"eventloop.h"
 
 int main(int argc,char* argv[])
@@ -16,6 +18,7 @@ int main(int argc,char* argv[])
         printf("usage: %s ip_address port\n",basename(argv[0]));
         return 1;
     }
+    std::cout<<"当前进程id = "<<getpid()<<std::endl;
     EventLoop           loop(argv[1],argv[2]);
     return 0;
 }

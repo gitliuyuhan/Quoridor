@@ -149,7 +149,7 @@ void Asynlog::threadFunc()
     std::vector<std::unique_ptr<Buffer> >       buffer_list_write;
 
     //日志文件以日期时间命名
-    Logfile       output(Timestamp::timeToFString()+".log");
+    Logfile       output("/home/lyh/GitHub/Quoridor/"+Timestamp::timeToFString()+".log");
     //预留16个满buffer空间
     buffer_list_write.reserve(16);
     while(running)
